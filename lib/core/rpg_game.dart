@@ -1,5 +1,6 @@
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_test/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,6 +9,8 @@ import '../components/player.dart';
 
 class RpgGame extends FlameGame with KeyboardEvents {
   final Player _player = Player();
+
+  bool _musicPlaying = false;
 
   @override
   Future<void> onLoad() async {
@@ -37,6 +40,11 @@ class RpgGame extends FlameGame with KeyboardEvents {
     } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
       _player.direction = Direction.down;
       _player.isMovingDown = isKeyDown;
+    }
+
+    if (!_musicPlaying) {
+      FlameAudio.bgm.play("field_theme_1.wav");
+      _musicPlaying = true;
     }
 
     return super.onKeyEvent(event, keysPressed);
