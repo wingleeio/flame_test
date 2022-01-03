@@ -31,26 +31,20 @@ class RpgGame extends FlameGame with KeyboardEvents {
   }
 
   void handlePlayersUpdated(data) {
-    int renderTime =
-        DateTime.now().millisecondsSinceEpoch - interpolationOffset;
-
-    _playersBuffer.insert(_playersBuffer.length, {
-      "T": renderTime,
-      "players": data,
-    });
+    _playersBuffer.insert(_playersBuffer.length, data);
   }
 
-  void handleInitializePlayers(data) {
-    data.forEach((id, p) {
-      Player player = Player(p["sprite"]);
-      player.label.text = id.substring(0, 5);
-      player.position = Vector2(p["x"], p["y"]);
-      player.direction = Direction.values
-          .firstWhere((element) => element.toString() == p["direction"]);
-      _players[data[id]["id"]] = player;
-      add(_players[data[id]["id"]]);
-    });
-  }
+  // void handleInitializePlayers(data) {
+  //   data.forEach((id, p) {
+  //     Player player = Player(p["sprite"]);
+  //     player.label.text = id.substring(0, 5);
+  //     player.position = Vector2(p["x"], p["y"]);
+  //     player.direction = Direction.values
+  //         .firstWhere((element) => element.toString() == p["direction"]);
+  //     _players[data[id]["id"]] = player;
+  //     add(_players[data[id]["id"]]);
+  //   });
+  // }
 
   @override
   void update(double dt) {
@@ -63,16 +57,20 @@ class RpgGame extends FlameGame with KeyboardEvents {
       while (_playersBuffer.length > 2 && renderTime > _playersBuffer[1]["T"]) {
         _playersBuffer.removeAt(0);
       }
+      double interpolationFactor =
+          (renderTime.toDouble() - _playersBuffer[0]["T"].toDouble()) /
+              ((_playersBuffer[1]["T"].toDouble()) -
+                  _playersBuffer[0]["T"].toDouble());
 
-      _playersBuffer[1]["players"].forEach((id, p) {
-        if (_playersBuffer[0]["players"].containsKey(id) &&
+      _playersBuffer[1]["P"].forEach((id, p) {
+        if (_playersBuffer[0]["P"].containsKey(id) &&
             _players.containsKey(id)) {
           Vector2 pos = Vector2(
-            _playersBuffer[0]["players"][id]["x"],
-            _playersBuffer[0]["players"][id]["y"],
+            _playersBuffer[0]["P"][id]["x"],
+            _playersBuffer[0]["P"][id]["y"],
           );
 
-          pos.lerp(Vector2(p['x'], p['y']), 0);
+          pos.lerp(Vector2(p['x'], p['y']), interpolationFactor);
 
           _players[id].position = pos;
           _players[id].isMovingLeft = p["isMovingLeft"];
