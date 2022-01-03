@@ -1,11 +1,22 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import 'package:flame_test/utils/constants.dart';
+import 'package:flutter/material.dart';
 
 class Player extends SpriteAnimationComponent with HasGameRef {
-  final double _movementSpeed = 150.0;
+  final TextComponent label = TextComponent(
+    position: Vector2(24, -24),
+    anchor: Anchor.topCenter,
+    textRenderer: TextPaint(
+      style: const TextStyle(
+        fontSize: 14.0,
+        fontFamily: "Dogica",
+        color: Color.fromARGB(255, 255, 255, 255),
+      ),
+    ),
+  );
   final double _animSpeed = 0.15;
-
+  final String character;
   late final SpriteAnimation _walkingUp;
   late final SpriteAnimation _walkingDown;
   late final SpriteAnimation _walkingLeft;
@@ -23,13 +34,13 @@ class Player extends SpriteAnimationComponent with HasGameRef {
 
   Direction direction = Direction.down;
 
-  Player() : super(size: Vector2(48, 48));
+  Player(this.character) : super(size: Vector2(48, 48));
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
-    final image = await gameRef.images.load('great_sage.png');
+    final image = await gameRef.images.load(character);
     final sprite = SpriteSheet(
       image: image,
       srcSize: Vector2(24, 24),
@@ -46,6 +57,8 @@ class Player extends SpriteAnimationComponent with HasGameRef {
     _idleRight = sprite.createAnimation(row: 2, stepTime: _animSpeed, to: 1);
 
     animation = _idleDown;
+
+    add(label);
   }
 
   @override
@@ -54,22 +67,18 @@ class Player extends SpriteAnimationComponent with HasGameRef {
 
     if (isMovingUp) {
       animation = _walkingUp;
-      position.add(Vector2(0, dt * -_movementSpeed));
     }
 
     if (isMovingDown) {
       animation = _walkingDown;
-      position.add(Vector2(0, dt * _movementSpeed));
     }
 
     if (isMovingLeft) {
       animation = _walkingLeft;
-      position.add(Vector2(dt * -_movementSpeed, 0));
     }
 
     if (isMovingRight) {
       animation = _walkingRight;
-      position.add(Vector2(dt * _movementSpeed, 0));
     }
 
     if (!isMovingUp && !isMovingDown && !isMovingLeft && !isMovingRight) {
