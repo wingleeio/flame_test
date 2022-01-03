@@ -21,17 +21,8 @@ class RpgGame extends FlameGame with KeyboardEvents {
 
     _rpgServer.initialize();
 
-    // _rpgServer.addListener("initializePlayers", handleInitializePlayers);
-    // _rpgServer.addListener("playerJoined", handlePlayerJoined);
     _rpgServer.addListener("playerDisconnected", handlePlayerDisconnected);
     _rpgServer.addListener("playersUpdated", handlePlayersUpdated);
-  }
-
-  void handlePlayerJoined(data) {
-    _players[data["id"]] = Player(data["sprite"]);
-    _players[data["id"]].position = Vector2(data["x"], data["y"]);
-    _players[data["id"]].label.text = data["id"].substring(0, 5);
-    add(_players[data["id"]]);
   }
 
   void handlePlayerDisconnected(data) {
