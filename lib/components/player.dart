@@ -1,7 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
-import 'package:flame_test/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flame_test/data/data.pbserver.dart' as $d;
 
 class Player extends SpriteAnimationComponent with HasGameRef {
   final TextComponent label = TextComponent(
@@ -32,7 +32,7 @@ class Player extends SpriteAnimationComponent with HasGameRef {
   bool isMovingLeft = false;
   bool isMovingRight = false;
 
-  Direction direction = Direction.down;
+  $d.Direction direction = $d.Direction.DOWN;
 
   Player(this.character) : super(size: Vector2(48, 48));
 
@@ -83,19 +83,21 @@ class Player extends SpriteAnimationComponent with HasGameRef {
 
     if (!isMovingUp && !isMovingDown && !isMovingLeft && !isMovingRight) {
       switch (direction) {
-        case Direction.up:
+        case $d.Direction.UP:
           animation = _idleUp;
           break;
-        case Direction.down:
+        case $d.Direction.DOWN:
           animation = _idleDown;
           break;
-        case Direction.left:
+        case $d.Direction.LEFT:
           animation = _idleLeft;
           break;
-        case Direction.right:
+        case $d.Direction.RIGHT:
           animation = _idleRight;
           break;
       }
     }
   }
 }
+
+class Direction {}
